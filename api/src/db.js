@@ -3,31 +3,41 @@ const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
 
-const diets = require('./models/Diets');
-const recipes = require('./models/Recipe')
+// const diets = require('./models/Diets');
+// const recipes = require('./models/Recipe')
 
-const {
-  DB_USER, DB_PASSWORD, DB_HOST,
-} = process.env;
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, BDD, DB_DIALECT } = process.env;
 
-const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/food`, {
-  logging: false, // set to console.log to see the raw SQL queries
-  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+const sequelize = new Sequelize(BDD, DB_USER, DB_PASSWORD, {
+  host: DB_HOST,
+  dialect: DB_DIALECT,
+  port: DB_PORT,
+  //!important: Descomentar cuando vaya a produccion
+  logging: false,
+  define: {
+    timestamps: false,
+    underscored: true
+  }
 });
 
+// const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/food`, {
+//   logging: false, // set to console.log to see the raw SQL queries
+//   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+// });
+
 //definicion de modelos a usar (ver pq el profe dice que ya venia algo de path que ya hacia estas funciones)
-diets(sequelize);
-recipes(sequelize);
+// diets(sequelize);
+// recipes(sequelize);
 
 const basename = path.basename(__filename);
 
 const modelDefiners = [];
 
 // Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
-fs.readdirSync(path.join(__dirname, '/models'))
+fs.readdirSync(path.join(__dirname, './models'))
   .filter((file) => (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js'))
   .forEach((file) => {
-    modelDefiners.push(require(path.join(__dirname, '/models', file)));
+    modelDefiners.push(require(path.join(__dirname, './models', file)));
   });
 
 // Injectamos la conexion (sequelize) a todos los modelos
