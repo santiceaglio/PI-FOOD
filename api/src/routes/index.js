@@ -19,7 +19,8 @@ router.get("/recipeByName", getNameRecipe);
 
 router.post("/recipes", postRecipe);
 
-router.get("/diets", getDiet);
+// router.get("/diets", getDiet);
 
 module.exports = router;
 //en la ruta se define el metodo, la ruta y que funcion va a realizar eso.
+
